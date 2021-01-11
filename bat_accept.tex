@@ -1,0 +1,91 @@
+\documentclass[conference]{IEEEtran}
+\IEEEoverridecommandlockouts
+\usepackage{cite}
+\usepackage{amsmath,amssymb,amsfonts}
+\usepackage{algorithmic}
+\usepackage{graphicx}
+\usepackage{textcomp}
+\usepackage{xcolor}
+\def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
+    T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
+\begin{document}
+\title{Accept}
+\author{\IEEEauthorblockN{1\textsuperscript{st} Milan Surname}\IEEEauthorblockA{milan.surname@posteo.de}}
+\maketitle
+\begin{abstract}
+    ActivityPub is a decentralized social networking protocol. Server form a peer to peer network and acct as mailboxes for there clients. Actor (user) IDs are thigh to there server. Therefore they lose there identity if the server is (permanently) unavailable.
+    To prevent identity lost, actors need an ID, which is not thigh to a server.
+    This can be achieved with W3C Decentralized Identifiers.
+\end{abstract}
+\section{Introduction}
+ActivityPub is a decentralized social networking protocol. ActivityPub is base on event publishing. There are tow class of nodes server and clients. Server form a peer to peer network. They acct as mailboxes for there clients. Clients do not have to online all the time. They receive events by queering there mailbox on a specific server periodically. Clients also send events via there servers.\\
+Multiple decentralized social networks use ActivityPub. For example the micro-blogging platform Mastodon and PeerTube a video hosting platform. Mastodon has millions of users. But there are still many unsolved problems in the ActivityPub world. One of them is, that the actors (user) ID is tight to there server. An user ID is an URI (mostly HTTPS) to there actor object. Because of that an actor can not change its server, without loosing its identity.\\
+There are multiple response for an actor to want to change there server. Moderation is another unsolved problem in the ActivityPub Eco System. Many servers experiment with different approaches of moderating. Mostly they use server black or white listing. An actor that dose not like there severs moderation policy might want to change there server.\\
+ActivityPub server are mostly operated by people in there free time. Especially smaller instances can have problems finding an new operator. If an instance goes down all users need to create a new identity on another instance and lose all there connections to other actors. This might also be a reason why most people deice to join a big instance.\\
+The majority of all mastodon users is on a few big instances. That is a bad for decentralization. Giving actors the option to change there server, might help user to distributing user more evenly. If they do not have to fear to lose there identity on a small instance. It would also allow users already using an big ActivityPub instance, to switches to a smaller one.\\
+To provide the ability to change the server, ActivityPub needs an Actor ID which is not linked to a specific server. One solution would be an decentralized or distributed ID. Decentralized Identifiers is an W3C standard (Working Draft), specifying such an ID.\\
+Decentralized Identifiers species an decentralized Identifiers the DID (Decentralized Identifiers). A DID consists of a method and an method specific ID. The method species the method specific IDs resolution process. Methods often use distributed ledgers as a key value store. A DID can be resolved to an DID document. The DID document contains information to authenticate and verify the DID subject. A DID document can also specify services. Services are methods to communicate or interact with the DID subject. This can be an URI pointing to a website or a mail-to URI. But it also could be a URI pointing to an ActivityPub Actor Object.
+\section{Objective}
+The objective is to extent ActivityPub with W3C DID, to allows actors to changes servers, without losing there identity. The protocol extension should be optional backwards compatible.\\
+In the Bachelor Theses i will specify this extension and implement a prototype reference server and a prototype reference client.\\
+The prototype reference client has no UI, only an API.
+\subsection{Requirements}
+To fulfill the objective at least these requirements need to be met:
+\begin{enumerate}
+	\item {
+        A server change should have following properties:
+        \begin{enumerate}
+            \item {Actor B has seen, actor A before its server change. Then actor B must be able to determent, that an actor from a different server, is actually actor A.}
+            \item {If actor A changes the server, it must not lose its Followers Collection. Activities to actor A´s Followers Collection must be delivered correctly. (So Activities from actor A to its followers are delivered correctly. Also Activities form actor B to actor A´s followers are delivered correctly.)}
+            \item {If §actor B changes the server, it must not lose its Following Connections. So Activities from actor B, which actor A follows, to actor B´s followers, will be delivered correctly to actor A. Activities from another actor to §actor B´s followers, will be correctly delivery to actor A.}
+            \item {Activity y from actor B should be send to actor A, because it refers to an activity X. Activity X was delivered before actor A changed the server. Activity Y must be delivered correctly to actor A. Actor A and B cloud be the same actor.}
+            \item {If actor A changes the server, public or group accessible Activities, must stay publicly or group accessible. Like public Activities in its outbox or liked Activities.}
+        \end{enumerate}
+    }
+    \item {
+        The protocol extension should be compatible with non supporting clients or servers:
+        \begin{enumerate}
+            \item {Server A dose not support the extension. Server A must be able to communicate with clients and servers using the extension.}
+            \item {Server A dose not support the extension. Server A must be able to preserve the extensions information. Server A can uses these information, if it is update.}
+            \item {Server A dose not support the extension. Server A must be able to preserve the extensions information. Client of server A, which supports the extension, can use the information.}
+            \item {Server A dose not support the extension. Client A must be able to the extensions information. So that a client from a different server can use the information.}
+            \item {Client A dose not support the extension. Client A must be able to communicate with clients and servers using the extension.}
+            \item {Client A dose not support the extension. Client A must be able to preserve the extensions information. Client A can uses these information, if it is update.}
+            \item {Client A dose not support the extension. Client A must be able to preserve the extensions information. Client of server A, which supports the extension, can use the information.}
+            \item {The protocol extension must not introduce significant latency. (yeah - know that a metric is missing)}
+         \end{enumerate}
+    }
+\end{enumerate}
+\section{Tests}
+To validate if the protocol extension meets the requirements, the prototype reference implementation is tested.\\
+The test setup consists of multiple servers and clients. For most test there is the actors original server, the server the actor changes to and an third uninvolved server. Every actor has its own client. The clients are controlled by an API. \\
+Servers and Clients communicate over a local network. There communication is typically encrypted with HTTPS, but the test setup might use unencrypted HTTP. For testing a local DID provider might be used.
+The test cases are derived from the requirements. Each requirements has at least one test. Test for requirements 1. are repeated multiple times. Every time actor B uses a different server. Actor B is the actor that dose not changes the server. Actor A is the one that changes the server. Actor B uses the actors A´s original server, the server actor a changes to and the uninvolved server.\\
+Test for requirements 1. are repeated, with actor A´s original server turned of after the server change.
+\section{Solution}
+A solution consist of three parts. The first one identifies an Actor Object using a DID. The second one identifies Collections by using an ID based on the actors DID. The third part is the server change.
+\subsection{DID as Actor ID}
+To uses a DID as an Actor ID, it must be possible to resolve a DID to an Actor Object. This is archived by adding an Service Endpoint to the DID document. The Service Endpoint contains the Actor Objects URI.\\
+The DID Actor ID can be resolved to the Actor Object URI with standard DID tooling. The Actor Object can then be retrieved with an URI specific method (e.g HTTPS).
+\subsection{Collection ID}
+To be able to use Collections after a server change. The Collection ID need to be tight to the users identity. Therefore we need a custom URI , which is base on the Actors DID.\\
+I have three ideas how to solve this. 
+\subsubsection{Method 1 - JSON-LD path URI}
+Collections are identified by a custom URI. The URI is based on the DID. And resolves to the Collections URI. (The Collections ID if our extension, would not be use) \\
+An Collections can be located at an arbitrarily URI. The URIs structure and format can change form implementation to implementation. Therefore the URI can not be resolved by any mapping scheme.\\
+The URIs path is a JSON-LD path. It points to a location in the Actor Object where the Collection URI can be found.\\
+This method can only resolve Collections, which are part of the Actor Object.
+\subsubsection{Method 2 - HTTPS with DID}
+Collections can be represented by a custom URI. It is based on the DID. The custom URI basically extends HTTPS. To allow a DID as host in an HTTPS URI.\\
+A Service Endpoint in a DID document, is used to resolve the DID to an IP address.\\
+This method would require the all implementations to use the same URI schema.
+\subsubsection{Method 3 - an ActivityPub object identifier}
+Collections can be represented by a custom URI. The URI consists of a DID and an Object ID (string). \\
+A mapping from the custom URI to an specific HTTPS URI is possible. This is technically used to retrieved a Collection. The resolved HTTPS URI should not be used on its own.\\
+This method uses URIs with no features. This dose not allow different implementations to use different URIs. But other extension might need to extend this URI schema.
+\subsection{Server Change}
+To change the server all actor information need to be copied and the DID document must be updated.
+A server change is carried out by the client. The client creates an Actor Object and all Collections, it wants to keep, on the new server.\\
+The client may use objects form its local cache, if the original server is unavailable. If successful the client can update its DID  document, with the new Actor Object URI. Then the client should delete its Actor Object on the original server.\\
+If the new server needs registration, the client needs to register first. Authentication and registration is not part of this extension.
+\end{document}
