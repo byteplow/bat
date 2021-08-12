@@ -1,7 +1,7 @@
 {
   "@context": {
     "@vocab": "_:",
-    "bp": "https://w3.d4.social/ld/context.jsonld#",
+    "bp": "https://w3.d4.social/bat/ld/context.jsonld#",
     "textblock": {
       "@id":"bp:textblock",
       "@type": "@id"
