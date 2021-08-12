@@ -1,13 +1,13 @@
 {
   "@context": {
     "@vocab": "_:",
-    "bp": "https://json-ld.org/playground/",
-    "textblog": {
-      "@id":"bp:textblog",
+    "bp": "https://w3.d4.social/ld/context.jsonld/",
+    "textblock": {
+      "@id":"bp:textblock",
       "@type": "@id"
     },
-    "textblogs": {
-      "@id": "bp:textblogs",
+    "textblocks": {
+      "@id": "bp:textblocks",
       "@type": "@id"
     },
     "text": {
