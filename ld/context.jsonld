@@ -1,0 +1,30 @@
+{
+  "@context": {
+    "@vocab": "_:",
+    "bp": "https://json-ld.org/playground/",
+    "textblog": {
+      "@id":"bp:textblog",
+      "@type": "@id"
+    },
+    "textblogs": {
+      "@id": "bp:textblogs",
+      "@type": "@id"
+    },
+    "text": {
+      "@id": "bp:text",
+      "@type": "https://schema.org/Text"
+    },
+    "textType": {
+      "@id": "bp:textType",
+      "@type": "https://schema.org/Text"
+    },
+    "title": {
+      "@id": "bp:title",
+      "@type": "https://schema.org/Text"
+    },
+    "oldversion": {
+      "@id": "bp:oldversion",
+      "@type": "@id"
+  	}
+  }
+}
